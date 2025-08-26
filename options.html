@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Red‑Blue Pill Options</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; }
+    h1 { color: #007acc; }
+    .section { margin-bottom: 20px; }
+    button { padding: 6px 12px; background: #007acc; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #005a8e; }
+    label { display: flex; align-items: center; }
+    label input { margin-right: 8px; }
+    p { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Red‑Blue Pill Options</h1>
+  <div class="section">
+    <label>
+      <input type="checkbox" id="telemetry">
+      Share anonymous usage data to improve suggestions
+    </label>
+    <p>When enabled, the extension collects high‑level, anonymized metrics (e.g., how often you flip content) to help us improve. It never collects personal data or browsing history.</p>
+  </div>
+  <div class="section">
+    <button id="clear-storage">Delete my data</button>
+    <p>This will remove all settings and any stored data used by the extension. You may need to reload pages for changes to take effect.</p>
+  </div>
+  <div class="section">
+    <h2>About</h2>
+    <p>Red‑Blue Pill helps you explore perspectives outside your usual bubble. It operates primarily on your device for privacy.</p>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

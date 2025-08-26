@@ -45,3 +45,54 @@
 .rbp-link-list a:hover {
   text-decoration: underline;
 }
+
+/* Header wrapper and close button styling */
+.rbp-header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rbp-close-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.rbp-close-btn:hover {
+  opacity: 0.6;
+}
+
+/* Dark mode styling */
+@media (prefers-color-scheme: dark) {
+  .rbp-overlay {
+    background: rgba(0, 0, 0, 0.9);
+    color: #eeeeee;
+    border-left-color: #0a84ff;
+  }
+  .rbp-overlay h2 {
+    color: #0a84ff;
+  }
+  .rbp-link-list a {
+    color: #0a84ff;
+  }
+}
+
+/* Responsive adjustments for small screens: turn overlay into a bottom sheet */
+@media (max-width: 600px) {
+  .rbp-overlay {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    max-width: none;
+    width: 100%;
+    max-height: 40vh;
+    border-left: none;
+    border-top: 2px solid #007acc;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+}

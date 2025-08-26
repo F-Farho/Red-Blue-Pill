@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Red-Blue Pill",
+  "version": "0.1.0",
+  "description": "Flip your algorithm: see balanced/opposite content with a toggle.",
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://m.youtube.com/*",
+    "https://www.google.*/*"
+  ],
+  "background": {
+    "service_worker": "background/sw.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+      "js": ["content/youtube.js"],
+      "css": ["content/inject.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.google.*/*"],
+      "js": ["content/google.js"],
+      "css": ["content/inject.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options/options.html"
+}

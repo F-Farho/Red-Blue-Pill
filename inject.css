@@ -1,0 +1,47 @@
+/* content/inject.css
+ * Minimal styling for Red‑Blue Pill overlays. The overlays are designed to
+ * sit unobtrusively on top of existing pages, with a semi-transparent
+ * background and a clear label indicating their origin.
+ */
+
+.rbp-overlay {
+  z-index: 2147483647; /* high priority above page elements */
+  position: fixed;
+  top: 0;
+  right: 0;
+  max-width: 300px;
+  max-height: 100vh;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 2px solid #007acc;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  color: #111;
+}
+
+.rbp-overlay h2 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #007acc;
+}
+
+.rbp-link-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rbp-link-list li {
+  margin-bottom: 8px;
+}
+
+.rbp-link-list a {
+  color: #007acc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.rbp-link-list a:hover {
+  text-decoration: underline;
+}

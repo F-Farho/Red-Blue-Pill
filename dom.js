@@ -1,29 +1,26 @@
-// common/dom.js
-// Helper functions for injecting overlays into arbitrary pages without
-// conflicting with existing styles. Use these functions in content scripts.
-
-/**
- * Create a container element for the extension UI and append it to the body.
- * Applies a unique class name to avoid clobbering site styles.
- * @param {string} id A DOM id to assign to the container.
- * @returns {HTMLElement}
+/* common/dom.js
+ * Helper functions for injecting overlays into arbitrary pages.
  */
-export function createOverlayContainer(id) {
-  const container = document.createElement('div');
-  container.id = id;
-  container.className = 'rbp-overlay';
-  // Basic styles set via CSS (see content/inject.css).
-  document.body.appendChild(container);
-  return container;
-}
 
-/**
- * Remove an overlay container if it exists.
- * @param {string} id
- */
-export function removeOverlayContainer(id) {
-  const existing = document.getElementById(id);
-  if (existing) {
-    existing.remove();
+(() => {
+  function createOverlayContainer(id) {
+    let el = document.getElementById(id);
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = id;
+    el.className = 'rbp-overlay';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-live', 'polite');
+    // Append to html root or body
+    (document.documentElement || document.body).appendChild(el);
+    return el;
   }
-}
+
+  function removeOverlayContainer(id) {
+    const el = document.getElementById(id);
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  }
+
+  // Expose to other content scripts via window
+  window.rbpDom = { createOverlayContainer, removeOverlayContainer };
+})();

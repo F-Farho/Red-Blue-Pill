@@ -1,27 +1,37 @@
-// content/google.js
-// Injected on Google search pages. Shows a panel with alternate search
-// engines to provide a less personalized set of results for the same query.
-
+/* content/google.js
+ * Injected on Google search pages. Compares your results with alternate engines and highlights differences.
+ */
 /* global chrome */
-import { createOverlayContainer, removeOverlayContainer } from '../common/dom.js';
 
-function getSearchQuery() {
-  const params = new URL(window.location.href).searchParams;
-  return params.get('q') || '';
-}
+const { createOverlayContainer, removeOverlayContainer } = window.rbpDom || {};
 
+// Render neutral panel with alternate results
 function renderNeutralPanel(results) {
-  removeOverlayContainer('rbp-google-overlay');
-  const container = createOverlayContainer('rbp-google-overlay');
+  if (!createOverlayContainer || !removeOverlayContainer) return;
+  const id = 'rbp-google-overlay';
+  removeOverlayContainer(id);
+  const container = createOverlayContainer(id);
+
+  // Header
+  const headerWrapper = document.createElement('div');
+  headerWrapper.className = 'rbp-header-wrapper';
   const header = document.createElement('h2');
-  header.textContent = 'Outside your bubble';
-  container.appendChild(header);
+  header.textContent = 'Outside Your Bubble';
+  headerWrapper.appendChild(header);
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '\u00d7';
+  closeBtn.setAttribute('aria-label', 'Close');
+  closeBtn.className = 'rbp-close-btn';
+  closeBtn.addEventListener('click', () => removeOverlayContainer(id));
+  headerWrapper.appendChild(closeBtn);
+  container.appendChild(headerWrapper);
+
   const list = document.createElement('ul');
   list.className = 'rbp-link-list';
   results.forEach(item => {
     const li = document.createElement('li');
     const a = document.createElement('a');
-    a.textContent = `View on ${item.title}`;
+    a.textContent = item.title;
     a.href = item.url;
     a.target = '_blank';
     li.appendChild(a);
@@ -30,26 +40,49 @@ function renderNeutralPanel(results) {
   container.appendChild(list);
 }
 
-function init() {
-  const query = getSearchQuery();
-  if (!query) return;
-  chrome.runtime.sendMessage({ type: 'NEUTRAL_SEARCH', q: query }, (res) => {
-    if (!res || !res.neutralResults) return;
+// Extract query parameter from URL
+function getQuery() {
+  try {
+    const params = new URL(location.href).searchParams;
+    const q = params.get('q');
+    if (q) return q;
+  } catch (e) {}
+  return null;
+}
+
+function initGoogle() {
+  const q = getQuery();
+  if (!q) {
+    removeOverlayContainer && removeOverlayContainer('rbp-google-overlay');
+    return;
+  }
+  chrome.runtime.sendMessage({ type: 'NEUTRAL_SEARCH', q }, (res) => {
+    if (!res || !res.neutralResults) {
+      removeOverlayContainer && removeOverlayContainer('rbp-google-overlay');
+      return;
+    }
     renderNeutralPanel(res.neutralResults);
   });
 }
 
-// Run on ready and on history changes (Google search uses SPA navigation sometimes)
-function onReady() {
-  init();
-  // Observe URL changes (popstate) to update results when navigating.
-  window.addEventListener('popstate', () => {
-    init();
+function onGoogleReady() {
+  initGoogle();
+  if (window.rbpGoogleObserver) return;
+  let debounceTimeout;
+  const observer = new MutationObserver(() => {
+    if (debounceTimeout) clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+      requestAnimationFrame(() => {
+        initGoogle();
+      });
+    }, 250);
   });
+  observer.observe(document.body, { childList: true, subtree: true });
+  window.rbpGoogleObserver = observer;
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', onReady);
+  document.addEventListener('DOMContentLoaded', onGoogleReady);
 } else {
-  onReady();
+  onGoogleReady();
 }

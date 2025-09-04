@@ -1,41 +1,26 @@
 {
   "manifest_version": 3,
   "name": "Red-Blue Pill",
-  "version": "0.1.0",
-  "description": "Flip your algorithm: see balanced/opposite content with a toggle.",
-  "action": {
-    "default_popup": "popup/popup.html"
-  },
-  "icons": {
-    "16": "assets/icon16.png",
-    "48": "assets/icon48.png",
-    "128": "assets/icon128.png"
-  },
-  "permissions": ["storage", "scripting", "activeTab"],
+  "version": "0.2.0",
+  "description": "Provenance Filter: highlight and optionally hide algorithmic recommendations.",
+  "permissions": ["storage"],
   "host_permissions": [
-    "https://www.youtube.com/*",
-    "https://m.youtube.com/*",
-    "https://www.google.*/*"
+    "https://www.youtube.com/*"
   ],
-  "background": {
-    "service_worker": "background/sw.js"
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RBP"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
-      "js": ["content/youtube.js"],
-      "css": ["content/inject.css"],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": ["https://www.google.*/*"],
-      "js": ["content/google.js"],
-      "css": ["content/inject.css"],
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["youtube.js"],
       "run_at": "document_idle"
     }
   ],
-  "options_page": "options/options.html",
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   }
 }
